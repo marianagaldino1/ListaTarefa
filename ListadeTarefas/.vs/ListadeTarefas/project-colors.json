@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "98b8364d-1107-4c87-be27-c5c2c1fc4364": {
+      "ProjectGuid": "98b8364d-1107-4c87-be27-c5c2c1fc4364",
+      "DisplayName": "ListaTarefasAPI",
+      "ColorIndex": 0
+    },
+    "0c3a72c2-ebf9-4da9-b79e-93749437c61b": {
+      "ProjectGuid": "0c3a72c2-ebf9-4da9-b79e-93749437c61b",
+      "DisplayName": "ListadeTarefas",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Arquivos Diversos",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 2
+}

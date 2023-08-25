@@ -1,0 +1,50 @@
+﻿@model TarefasModel
+
+<form asp-action="TarefaCreate">
+    <br />
+    <div class="container border p-3">
+        <h1 class="text-primary">Criar Tarefa</h1>
+
+        <hr />
+
+        <div class="row">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="col-2">
+                <label asp-for="NomeTarefa" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="NomeTarefa" class="form-control" />
+                <span asp-validation-for="NomeTarefa" class="text-danger"></span>
+            </div>
+
+            <div class="col-2">
+                <label asp-for="CustoTarefa" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="CustoTarefa" class="form-control" />
+                <span asp-validation-for="CustoTarefa" class="text-danger"></span>
+            </div>
+
+            <div class="col-2">
+                <label asp-for="DataLimite" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="DataLimite" class="form-control" />
+                <span asp-validation-for="DataLimite" class="text-danger"></span>
+            </div>
+
+
+
+
+            <div class="col-5">
+                <input type="submit" value="Create" class="btn btn-success form-control" />
+            </div>
+        </div>
+
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

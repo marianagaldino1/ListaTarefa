@@ -1,0 +1,314 @@
+﻿@model IEnumerable<ListadeTarefas.Models.TarefasModel>
+
+<h2>Lista Tarefas</h2>
+<hr />
+<br />
+<style>
+    body {
+      margin: 2em;
+    }
+
+    .highlight {
+        background-color: #f0aaaa !important
+    }
+
+</style>
+
+<div class="panel panel-default">
+    <table id="tarefas" class="table table-striped " cellspacing="0">
+        <thead>
+            <tr>
+                <th >
+                    Nome</th>
+                <th > Custo </th>
+                <th>Data Limite</th>
+            </tr>
+        </thead>
+        <tbody id="listaTarefa">
+        
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="col-md-12">
+                <div class="pull-rigth">
+                    <a href="#" class="btn btn-primary" onclick="Incluir();">
+                    <span id="btnCreate" title="Create New"  class="fas fa-plus" onlick=""></span> Incluir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="excluirTarefa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Exclusão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h5>Confirma a Exclusão da Tarefa</h5>
+        <input type="hidden" id="IdTarefa"  />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+        <button type="button" class="btn btn-primary" onclick="ConfirmaExcluir()">Sim</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="incluirTarefa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tarefas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+            <div class="col-12 pb-1">
+                <input type="hidden" id="IdTarefaUpdate"/>
+                <label class="control-label pt-3" style="font-size:20px;" for="NomeTarefa">Nome Tarefa</label>
+            </div>
+            <div class="col-12 pb-3">
+                <input class="form-control" id="nomeTarefa" type="text" data-val="true" data-val-required="The NomeTarefa field is required." id="NomeTarefa" name="NomeTarefa" value="">
+                <span class="text-danger field-validation-valid" data-valmsg-for="NomeTarefa" data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="col-12 pb-1">
+                <label class="control-label pt-3" style="font-size:20px;" for="CustoTarefa">Custo Tarefa</label>
+            </div>
+            <div class="col-12 pb-3">
+                <input class="form-control" type="number"  id="custoTarefa" data-val="true" data-val-number="The field CustoTarefa must be a number." data-val-required="The CustoTarefa field is required." id="CustoTarefa" name="CustoTarefa" value="">
+                <span class="text-danger field-validation-valid" data-valmsg-for="CustoTarefa" data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="col-12 pb-1">
+                <label class="control-label pt-3" style="font-size:20px;" for="DataLimite">Data Limite</label>
+            </div>
+            <div class="col-12 pb-3">
+                <input class="form-control" type="date" id="dataTarefa" data-val="true" data-val-required="The DataLimite field is required." id="DataLimite" name="DataLimite" value="">
+                <span class="text-danger field-validation-valid" data-valmsg-for="DataLimite" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+        <button type="button" class="btn btn-primary" onclick="ConfirmaIncluir()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script>
+   $(document).ready(function () {
+
+    function dragStart(e) {
+        this.style.opacity = '0.4';
+        dragSrcEl = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+    };
+
+    function dragEnter(e) {
+        this.classList.add('over');
+    }
+
+    function dragLeave(e) {
+        e.stopPropagation();
+        this.classList.remove('over');
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function dragDrop(e) {
+        if (dragSrcEl != this) {
+            dragSrcEl.innerHTML = this.innerHTML;
+            this.innerHTML = e.dataTransfer.getData('text/html');
+        }
+        return false;
+    }
+
+    function dragEnd(e) {
+        var listItens = document.querySelectorAll('.draggable');
+        [].forEach.call(listItens, function (item) {
+            item.classList.remove('over');
+        });
+        this.style.opacity = '1';
+    }
+
+    function addEventsDragAndDrop(el) {
+        el.addEventListener('dragstart', dragStart, false);
+        el.addEventListener('dragenter', dragEnter, false);
+        el.addEventListener('dragover', dragOver, false);
+        el.addEventListener('dragleave', dragLeave, false);
+        el.addEventListener('drop', dragDrop, false);
+        el.addEventListener('dragend', dragEnd, false);
+    }
+
+    var listItens = document.querySelectorAll('.draggable');
+    [].forEach.call(listItens, function (item) {
+        addEventsDragAndDrop(item);
+    });
+
+    function addNewItem() {
+        var newItem = document.querySelector('.input').value;
+        if (newItem != '') {
+            document.querySelector('.input').value = '';
+            var li = document.createElement('li');
+            var attr = document.createAttribute('draggable');
+            var ul = document.querySelector('ul');
+            li.className = 'draggable';
+            attr.value = 'true';
+            li.setAttributeNode(attr);
+            li.appendChild(document.createTextNode(newItem));
+            ul.appendChild(li);
+            addEventsDragAndDrop(li);
+        }
+    }
+    });
+
+
+   listarTarefas();
+
+
+   function Editar(id)
+   {
+
+       $.ajax({
+            async:false,
+            type: "GET",
+            processData:true,
+            url: './TarefaID',
+            processData: true,
+            data: { ID : id},
+            dataType: "json",
+            success: function (response) {
+                $('#IdTarefaUpdate').val(id);
+                $('#nomeTarefa').val(response.nomeTarefa);
+                $('#nomeTarefa').val(response.nomeTarefa);
+                $('#custoTarefa').val(response.custoTarefa);
+                $('#dataTarefa').val(response.dataLimite);
+                $('#incluirTarefa').modal("show");
+            }
+        });
+
+   }
+
+    function listarTarefas() {
+
+        $('#listaTarefa').empty();
+
+        $.ajax({
+            async:false,
+            url: './Lista',
+            dataType: "json",
+            success: function (response) {
+
+               $.each(response, function(index, tarefa){
+                   $('#listaTarefa').append(`
+                       <tr class="draggable ${tarefa.custoTarefa >= 1000 ? "highlight" : ""}" draggable="true">
+                        <td>
+                          ${tarefa.nomeTarefa}
+                        </td>
+                        <td>
+                          ${tarefa.custoTarefa.toLocaleString("pt-BR", {style:"currency", currency:"BRL"})}
+                        </td>
+                        <td>
+                            ${ new Date(tarefa.dataLimite).toISOString().substr(0, 10).split('-').reverse().join('/')}
+                        </td>
+                        <td>
+                        <a href="#"  onclick="Editar(${tarefa.id_Tarefa});" title="Edita" class="btn btn-warning">
+                            <span class="fas fa-edit"></span>
+                        </a>
+                        <a href="#" title="Deleta" onclick="Excluir(${tarefa.id_Tarefa});" class="btn btn-danger">
+                            <span class="fa-solid fa-trash"></span>
+                        </a>
+                        </td>
+                        </tr>`);
+               });
+
+            }
+        });
+    }
+
+    function Incluir() {
+        $('#incluirTarefa').modal("show");
+    }
+
+    function ConfirmaIncluir() {
+        var url = 'TarefaCreate';
+        var postData = { 
+            NomeTarefa : $('#nomeTarefa').val(),
+            CustoTarefa : $('#custoTarefa').val(),
+            DataLimite : $('#dataTarefa').val(),
+        }
+
+        if($('#IdTarefaUpdate').val())
+        {
+            postData.Id_Tarefa = $('#IdTarefaUpdate').val();
+            url = 'TarefaUpdate'
+        }
+
+        $.ajax({
+            async:false,
+            type: "POST",
+            processData:true,
+            url: `./${url}`,
+            processData: true,
+            data: { dados : JSON.stringify(postData)},
+            dataType: "json",
+            success: function (response) {
+                if(response == 'sucesso')
+                {
+                    listarTarefas();
+                    $('#incluirTarefa').modal("hide");
+                }
+            }
+        });
+    }
+
+    function Excluir(idtarefa) {
+
+        $('#IdTarefa').val(idtarefa) ;
+        $('#excluirTarefa').modal("show");
+
+    }
+
+
+    function ConfirmaExcluir() {
+
+        var postData = { 
+            Id_Tarefa: $('#IdTarefa').val() 
+        }
+
+        $.ajax({
+            async:false,
+            type: "POST",
+            processData:true,
+            url: './TarefaDelete',
+            processData: true,
+            data: { dados : JSON.stringify(postData)},
+            dataType: "json",
+            success: function (response) {
+                if(response == 'sucesso')
+                {
+                    listarTarefas();
+                    $('#excluirTarefa').modal("hide");
+                }
+            }
+        });
+    }
+
+
+</script>
+}
